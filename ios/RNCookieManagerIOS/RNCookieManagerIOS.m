@@ -230,7 +230,7 @@ RCT_EXPORT_METHOD(
     }
 }
 
--(NSDictionary *)createCookieList:(NSArray<NSHTTPCookie *>*)cookies
+-(NSArray *)createCookieList:(NSArray<NSHTTPCookie *>*)cookies
 {
     NSMutableArray *cookieList = [[NSMutableArray alloc] init];
     for (NSHTTPCookie *cookie in cookies) {
