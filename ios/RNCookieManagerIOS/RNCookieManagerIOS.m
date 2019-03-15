@@ -232,10 +232,9 @@ RCT_EXPORT_METHOD(
 
 -(NSDictionary *)createCookieList:(NSArray<NSHTTPCookie *>*)cookies
 {
-    NSMutableDictionary *cookieList = [NSMutableDictionary dictionary];
+    NSMutableArray *cookieList = [[NSMutableArray alloc] init];
     for (NSHTTPCookie *cookie in cookies) {
-        // NSLog(@"COOKIE: %@", cookie);
-        [cookieList setValue:[self createCookieData:cookie] forKey:cookie.name];
+        [cookieList addObject:[self createCookieData:cookie]];
     }
     return cookieList;
 }
