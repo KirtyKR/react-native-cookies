@@ -41,13 +41,13 @@ RCT_EXPORT_METHOD(
     NSDate *expiration = [RCTConvert NSDate:props[@"expiration"]];
 
     NSMutableDictionary *cookieProperties = [NSMutableDictionary dictionary];
-    [cookieProperties setObject:name forKey:NSHTTPCookieName];
-    [cookieProperties setObject:value forKey:NSHTTPCookieValue];
-    [cookieProperties setObject:domain forKey:NSHTTPCookieDomain];
-    [cookieProperties setObject:origin forKey:NSHTTPCookieOriginURL];
-    [cookieProperties setObject:path forKey:NSHTTPCookiePath];
-    [cookieProperties setObject:version forKey:NSHTTPCookieVersion];
-    [cookieProperties setObject:expiration forKey:NSHTTPCookieExpires];
+    [cookieProperties setValue:name forKey:NSHTTPCookieName];
+    [cookieProperties setValue:value forKey:NSHTTPCookieValue];
+    [cookieProperties setValue:domain forKey:NSHTTPCookieDomain];
+    [cookieProperties setValue:origin forKey:NSHTTPCookieOriginURL];
+    [cookieProperties setValue:path forKey:NSHTTPCookiePath];
+    [cookieProperties setValue:version forKey:NSHTTPCookieVersion];
+    [cookieProperties setValue:expiration forKey:NSHTTPCookieExpires];
 
     NSHTTPCookie *cookie = [NSHTTPCookie cookieWithProperties:cookieProperties];
 
@@ -92,7 +92,7 @@ RCT_EXPORT_METHOD(getFromResponse:(NSURL *)url
 
         for (int i = 0; i < cookies.count; i++) {
             NSHTTPCookie *cookie = [cookies objectAtIndex:i];
-            [dics setObject:cookie.value forKey:cookie.name];
+            [dics setValue:cookie.value forKey:cookie.name];
             NSLog(@"cookie: name=%@, value=%@", cookie.name, cookie.value);
             [[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookie:cookie];
         }
@@ -135,7 +135,7 @@ RCT_EXPORT_METHOD(
                     NSMutableDictionary *cookies = [NSMutableDictionary dictionary];
                     for(NSHTTPCookie *currentCookie in allCookies) {
                         if([currentCookie.domain containsString:topLevelDomain]) {
-                            [cookies setObject:currentCookie.value forKey:currentCookie.name];
+                            [cookies setValue:currentCookie.value forKey:currentCookie.name];
                         }
                     }
                     resolve(cookies);
@@ -148,11 +148,11 @@ RCT_EXPORT_METHOD(
         NSMutableDictionary *cookies = [NSMutableDictionary dictionary];
         for (NSHTTPCookie *c in [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL:url]) {
             NSMutableDictionary *d = [NSMutableDictionary dictionary];
-            [d setObject:c.value forKey:@"value"];
-            [d setObject:c.name forKey:@"name"];
-            [d setObject:c.domain forKey:@"domain"];
-            [d setObject:c.path forKey:@"path"];
-            [d setObject:[self.formatter stringFromDate:c.expiresDate] forKey:@"expiresDate"];
+            [d setValue:c.value forKey:@"value"];
+            [d setValue:c.name forKey:@"name"];
+            [d setValue:c.domain forKey:@"domain"];
+            [d setValue:c.path forKey:@"path"];
+            [d setValue:[self.formatter stringFromDate:c.expiresDate] forKey:@"expiresDate"];
             [cookies setObject:d forKey:c.name];
         }
         resolve(cookies);
@@ -235,7 +235,7 @@ RCT_EXPORT_METHOD(
     NSMutableDictionary *cookieList = [NSMutableDictionary dictionary];
     for (NSHTTPCookie *cookie in cookies) {
         // NSLog(@"COOKIE: %@", cookie);
-        [cookieList setObject:[self createCookieData:cookie] forKey:cookie.name];
+        [cookieList setValue:[self createCookieData:cookie] forKey:cookie.name];
     }
     return cookieList;
 }
@@ -243,10 +243,10 @@ RCT_EXPORT_METHOD(
 -(NSDictionary *)createCookieData:(NSHTTPCookie *)cookie
 {
     NSMutableDictionary *cookieData = [NSMutableDictionary dictionary];
-    [cookieData setObject:cookie.value forKey:@"value"];
-    [cookieData setObject:cookie.name forKey:@"name"];
-    [cookieData setObject:cookie.domain forKey:@"domain"];
-    [cookieData setObject:cookie.path forKey:@"path"];
+    [cookieData setValue:cookie.value forKey:@"value"];
+    [cookieData setValue:cookie.name forKey:@"name"];
+    [cookieData setValue:cookie.domain forKey:@"domain"];
+    [cookieData setValue:cookie.path forKey:@"path"];
     return cookieData;
 }
 
