@@ -66,7 +66,17 @@ RCT_EXPORT_METHOD(
         }
     } else {
         [[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookie:cookie];
-        resolve(nil);
+        // as thier is no completion handler so to make sure that cookie is set and then resolve the promise.
+        Boolean isCookieHasBeenSet = false;
+        while (isCookieHasBeenSet == false) {
+            NSArray *cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookies];
+            for (NSHTTPCookie *savedCookie in cookies) {
+                if (savedCookie.name == cookie.name && savedCookie.value == cookie.value && savedCookie.domain == cookie.domain) {
+                    isCookieHasBeenSet = true;
+                    resolve(nil);
+                }
+            }
+        }
     }
 }
 
@@ -172,9 +182,15 @@ RCT_EXPORT_METHOD(
                     for(NSHTTPCookie *currentCookie in allCookies) {
                         // Uses the NSHTTPCookie directly has no effect, nor deleted the cookie nor thrown an error.
                         // Create a new cookie with the given values and delete this one do the work.
-                        [cookieStore deleteCookie:currentCookie completionHandler:^{}];
+                        NSMutableDictionary<NSHTTPCookiePropertyKey, id> *cookieData =  [NSMutableDictionary dictionary];
+                        [cookieData setValue:currentCookie.name forKey:NSHTTPCookieName];
+                        [cookieData setValue:currentCookie.value forKey:NSHTTPCookieValue];
+                        [cookieData setValue:currentCookie.domain forKey:NSHTTPCookieDomain];
+                        [cookieData setValue:currentCookie.path forKey:NSHTTPCookiePath];
+
+                        NSHTTPCookie *newCookie = [NSHTTPCookie cookieWithProperties:cookieData];
+                        [cookieStore deleteCookie:newCookie completionHandler:^{}];
                     }
-                    [[NSUserDefaults standardUserDefaults] synchronize];
                     resolve(nil);
                 }];
             });
@@ -186,7 +202,6 @@ RCT_EXPORT_METHOD(
         for (NSHTTPCookie *c in cookieStorage.cookies) {
             [cookieStorage deleteCookie:c];
         }
-        [[NSUserDefaults standardUserDefaults] synchronize];
         resolve(nil);
     }
 }
